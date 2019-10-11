@@ -35,7 +35,7 @@ function getProjectResource(project_id) {
 function getProjects() {
 
     return db('projects')
-    .select('name', 'project_description', 'completed')
+    .select('name', 'description', 'completed')
     .then(data => {
         return data;
     })
