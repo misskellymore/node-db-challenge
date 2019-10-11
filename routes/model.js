@@ -1,109 +1,107 @@
 const db = require('../db/dbConfig.js');
 
 
+// resources
+
+function addResource(resource) {
+    return db('resources')
+    .insert(resource)
+    .then(ids => {
+        return ids
+    });
+}
 
 
-// get resources
+function getResources() {
+    return db('resources')
+}
 
-function getResources(){
 
-    return db('resources') 
+// projects
 
-    .select()
-    .then(data => {
-        return data;
+function addProject(project) {
+    return db('projects')
+    .insert(project)
+    .then(ids => {
+        return ids
     });
 }
 
 
 
-// get resouce w/project id
-
-function getProjectResource(project_id) {
-
-    return ('resources')
-    .select('resources.name', 'resources.description')
-    .join('project_resources as pr', "pr.resource_id", "=", 'resources.id' )
-    .where(({project_id}))
-    .then(data => {
-        return data;
-    })
-}
-
-// get projects
-
 function getProjects() {
-
     return db('projects')
-    .select('name', 'description', 'completed')
+
     .then(data => {
-        return data;
+        const BoolArrayPro = data.map(project => {
+            if(project.completed){
+                const updatedBool = {
+                    ...project,
+                    completed: true
+                };
+                return updatedBool;
+
+            } else {
+                const updatedBool = {
+                    ...project,
+                    completed: false
+                };
+                return updatedBool;
+            }
+        });
+        return BoolArrayPro;
     })
 }
 
 
-// get tasks for project id
+// tasks
 
-function getProjectTasks(project_id) {
+function addTask(task, project_id) {
 
-    return db('projects')
+    const newtask = { ...task, project_id : project_id}
 
-    .select('projects.name', 'projects.project_description', 
-            'tasks.task_description', 'tasks.notes', 'tasks.completed')
-
-    .join('tasks', 'projects.id', "=", 'tasks.project_id')
-    .where({project_id})
-    .then(data => {
-        return data;
-    })        
-
-}
-
-
-
-// add project
-
-function addProject(project){
-
-    return db('projects')
-    .insert(project)
-    .then(data => {
-        return data;
-    })
-}
-
-
-// add resource
-
-function addResource(resource){
-
-    return db('resources')
-    .insert(resource)
-    .then(data => {
-        return data;
-    })
-}
-
-
-// add task
-
-function addTask(project_id, task){
 
     return db('tasks')
-    .insert(task)
-    .where({project_id})
+    .insert(newtask)
+    .then(id => {
+        return id
+    });
+}
+
+
+
+function getTasks() {
+    return db('tasks as t')
+    .join('projects as p', 'p.project_id', 't.project_id')
+    .select('t.task_id', 't.description', 't.notes', 't.completed as t_completed',
+            'p.name','p.description')
+
     .then(data => {
-        return data;
+        const BoolArrayTask = data.map(task => {
+            if(task.task_completed){
+                const updatedBool = {
+                    ...task,
+                    task_completed: true
+                };
+                return updatedBool;
+            } else {
+                const updatedBool = {
+                    ...task,
+                    task_completed: false
+                };
+                return updatedBool;
+            }
+        });
+        return BoolArrayTask;
     })
 }
 
 
-module.exports = {  getResources, 
-                    getProjectResource,
-                    getProjects,
-                    getProjectTasks,
-                    addProject,
-                    addResource,
-                    addTask
-
- }
+module.exports = {
+    addResource,
+    addProject,
+    addTask,
+    getResources,
+    getProjects,
+    getTasks
+}

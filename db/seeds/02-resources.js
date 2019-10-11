@@ -5,9 +5,10 @@ exports.seed = function(knex) {
     .then(function () {
       // Inserts seed entries
       return knex('resources').insert([
-        {name: 'writers'},
-        {name: 'tennis_shoes', description: 'size 7.5' },
-        {name: 'yoga_teacher', description: 'yin yoga certified' }
+        {name: 'writers'},        
+        {name: 'yoga_teacher one', description: 'hot yoga certified'},
+        {name: 'yoga_teacher two', description: 'yin yoga certified' },
+        {name: 'yoga_teacher three', description: 'power yoga certified' }
       ]);
     });
 };

@@ -6,7 +6,6 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('projects').insert([
         {name: 'coffeefable', description: 'an app where short story writers can share their work while earning', completed: false},
-        {name: 'marathon training', completed: false},
         {name: 'yoga nonprofit', description: 'donation based yoga where money goes towards SF homeless', completed: false}
        
       ]);

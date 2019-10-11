@@ -3,30 +3,108 @@ const router = require('express').Router();
 const model = require('./model.js');
 
 
-router.get('/', (req, res) => {
+// projects
+
+router.get('/pro', (req, res) => {
     model.getProjects()
-    .then(pros => {
-        pros.forEach(pro => {
-            pro.completed === 0 ? pro.completed = false : pro.completed = true;
+    .then(projects => {
+        res.status(200).json(projects)
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: "error getting projects" })
+    })
+})
+
+router.post('/pro', (req, res) => {
+    const newProject = req.body;
+    if (!newProject.name) {
+        res.status(400).json({ error: "project name required" })
+    } else {
+        model.addProject(newProject)
+        .then(resp => {
+            console.log(resp);
+            res.status(201).json(resp)
         })
-
-        res.status(200).json(pros);
-    })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "error adding project" })
+        })
+    }
 })
 
 
-router.get('/resources', (req,res) => {
+
+// Tasks
+
+router.get('/tasks', (req, res) => {
+    model.getTasks()
+    .then(tasks => {
+        res.status(200).json(tasks)
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: "server error getting tasks" })
+    })
+})
+
+router.post('/:project_id/tasks', (req, res) => {
+    const newTask = req.body;
+    const { project_id } = req.params;
+    if (!newTask.description) {
+        res.status(400).json({ error: "task description required" })
+    } else {
+        model.addTask(newTask, project_id)
+        .then(resp => {
+            console.log(resp);
+            res.status(201).json(resp)
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "server error adding task" })
+        })
+    }
+})
+
+
+// resources
+
+router.get('/resources', (req, res) => {
     model.getResources()
-    .then(resource => {
-            res.status(200).json(resource)
+    .then(resources => {
+        res.status(200).json(resources)
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: "server error getting resources" })
     })
 })
 
 
-router.get('/:id/tasks', (req, res) => {
-
-    const {id} = req.params;
+router.post('/resources', (req, res) => {
+    const newResource = req.body;
+    if (!newResource.name) {
+        res.status(400).json({ error: "resource name is required" })
+    } else {
+        model.addResource(newResource)
+        .then(resp => {
+            console.log(resp);
+            res.status(201).json(resp)
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "error adding Resource" })
+        })
+    }
 })
+
+
+
+
+
+
+
+
 
 
 
