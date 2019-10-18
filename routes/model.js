@@ -74,7 +74,7 @@ function getTasks() {
     return db('tasks as t')
     .join('projects as p', 'p.project_id', 't.project_id')
     .select('t.task_id', 't.description', 't.notes', 't.completed as t_completed',
-            'p.name','p.description')
+            'p.name', 'p.description as project_decription')
 
     .then(data => {
         const BoolArrayTask = data.map(task => {
